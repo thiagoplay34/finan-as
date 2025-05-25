@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Finanças</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #f0f0f0; margin: 0; padding: 0; }
+    .container { max-width: 800px; margin: 50px auto; padding: 30px; background: #1e1e1e; border-radius: 8px; box-shadow: 0 0 25px rgba(0, 0, 0, 0.6); }
+    h2, h3 { color: #00c896; }
+    label, input, select, textarea, button { display: block; width: 100%; margin-top: 10px; }
+    input, select, textarea { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2c2c2c; color: #f0f0f0; }
+    button { background: #00c896; color: #121212; font-weight: bold; padding: 10px; border: none; cursor: pointer; margin-top: 20px; transition: background 0.3s; }
+    button:hover { background: #00a37a; }
+    .hidden { display: none; }
+    .entry { padding: 10px; margin: 10px 0; border: 1px solid #333; border-left: 5px solid #00c896; background: #222; }
+    .entry small { color: #aaa; font-size: 0.9em; }
+    .editavel { background: #2a2a2a; cursor: pointer; display: inline-block; padding: 2px 5px; border-radius: 4px; }
+    .logo { text-align: center; font-size: 28px; font-weight: bold; color: #00c896; margin-bottom: 20px; }
+    dialog {
+      background: #1e1e1e; border: none; border-radius: 8px; padding: 20px; color: white;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    dialog input {
+      background: #2c2c2c; border: 1px solid #555; color: #f0f0f0;
+    }
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="loginContainer">
+    <div class="logo">💼 App de Finanças</div>
+    <h2>Login Administrativo</h2>
+    <label for="username">Usuário</label>
+    <input type="text" id="username">
+    <label for="password">Senha</label>
+    <input type="password" id="password">
+    <button onclick="login()">Entrar</button>
+  </div>
+
+  <div class="container hidden" id="appContainer">
+    <div class="logo">💼 App de Finanças</div>
+    <h2>Painel Financeiro</h2>
+<button id="btnLogout" class="hidden" onclick="logout()">🚪 Sair</button>
+<button id="btnUsuarios" class="hidden" onclick="mostrarUsuarios()">👥 Usuários</button>
+<div id="adminSection" class="hidden">
+  <h3>Gerenciar Usuários</h3>
+  <label for="novoUsuario">Nome de Usuário</label>
+  <input type="text" id="novoUsuario">
+  <label for="novaSenha">Senha</label>
+  <input type="password" id="novaSenha">
+  <button onclick="criarUsuario()">Criar Usuário</button>
+
+  <h4>Usuários Cadastrados</h4>
+  <ul id="listaUsuarios"></ul>
+</div>
+
+
+    <label for="tipo">Tipo</label>
+    <select id="tipo">
+      <option value="entrada">Entrada</option>
+      <option value="saida">Saída</option>
+    </select>
+
+    <label for="descricao">Descrição</label>
+    <input type="text" id="descricao">
+
+    <label for="valor">Valor (R$)</label>
+    <input type="number" id="valor" step="0.01">
+
+    <button onclick="adicionarLancamento()">Adicionar</button>
+
+    <h3>Resumo</h3>
+    <p><strong>Caixa Inicial:</strong> R$ <span id="valorCaixaInicial" class="editavel" onclick="abrirDialog(this, 'caixaInicial')">0.00</span></p>
+    <p><strong>Total de Entradas:</strong> R$ <span id="totalEntradas" class="editavel" onclick="abrirDialog(this, 'entradas')">0.00</span></p>
+    <p><strong>Total de Saídas:</strong> R$ <span id="totalSaidas" class="editavel" onclick="abrirDialog(this, 'saidas')">0.00</span></p>
+    <p><strong>Saldo Atual:</strong> R$ <span id="totalLucro" class="editavel" onclick="abrirDialog(this, 'saldo')" style="color: #00c896;">0.00</span></p>
+
+    <h3>Histórico de Lançamentos</h3>
+    
+<div id="historico"></div>
+<button onclick="baixarPDF()">📄 Baixar Histórico em PDF</button>
+<button onclick="limparHistorico()">🧹 Limpar Histórico</button>
+
+  </div>
+
+  
+<dialog id="editDialog">
+  <form method="dialog" style="min-width: 300px;">
+    <h3 style="margin-top: 0; color: #00c896;">✏️ Editar Valor</h3>
+    <p>Digite o novo valor e clique em confirmar para atualizar o valor selecionado.</p>
+    <input type="number" step="0.01" id="novoValor" style="margin-top: 10px;">
+    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+      <button type="submit" style="background: #00c896; color: #121212; padding: 8px 16px; border-radius: 6px;">✅ Confirmar</button>
+      <button type="button" onclick="dialog.close()" style="background: #555; color: white; padding: 8px 16px; border-radius: 6px;">❌ Cancelar</button>
+    </div>
+  </form>
+</dialog>
+
+
+  
+<dialog id="caixaDialog">
+  <form method="dialog" style="min-width: 300px;">
+    <h3 style="margin-top: 0; color: #00c896;">💰 Caixa Inicial</h3>
+    <p>Informe o valor inicial do caixa para o sistema começar os cálculos.</p>
+    <input type="number" step="0.01" id="valorCaixaDialog" style="margin-top: 10px;">
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+      <button type="submit" style="background: #00c896; color: #121212; padding: 8px 16px; border-radius: 6px;">✅ Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+
+  <script>
+    let totalEntradas = parseFloat(localStorage.getItem('totalEntradas')) || 0;
+    let totalSaidas = parseFloat(localStorage.getItem('totalSaidas')) || 0;
+    let caixaInicial = parseFloat(localStorage.getItem('caixaInicial')) || 0;
+    let spanEditando = null;
+    let tipoEditando = '';
+
+    function login() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user === 'admin' && pass === 'admin') {
+      document.getElementById('adminSection').classList.add('hidden');
+      document.getElementById('btnUsuarios').classList.remove('hidden');
+      document.getElementById('btnLogout').classList.remove('hidden');
+      listarUsuarios();
+        document.getElementById('loginContainer').classList.add('hidden');
+        document.getElementById('valorCaixaDialog').value = caixaInicial.toFixed(2);
+        document.getElementById('caixaDialog').showModal();
+      } else {
+        alert('Usuário ou senha inválidos.');
+      }
+    }
+
+    document.getElementById('caixaDialog').addEventListener('close', () => {
+      const valor = parseFloat(document.getElementById('valorCaixaDialog').value);
+      caixaInicial = isNaN(valor) ? 0 : valor;
+      localStorage.setItem('caixaInicial', caixaInicial);
+      document.getElementById('valorCaixaInicial').textContent = caixaInicial.toFixed(2);
+      document.getElementById('appContainer').classList.remove('hidden');
+      atualizarResumo();
+      carregarHistorico();
+    });
+
+    function adicionarLancamento() {
+      const tipo = document.getElementById('tipo').value;
+      const descricao = document.getElementById('descricao').value;
+      const valor = parseFloat(document.getElementById('valor').value);
+      if (!descricao || isNaN(valor)) return alert('Preencha todos os campos.');
+
+      const dataHora = new Date().toLocaleString('pt-BR');
+      const lancamento = { tipo, descricao, valor, dataHora };
+      salvarLancamento(lancamento);
+
+      if (tipo === 'entrada') totalEntradas += valor;
+      else totalSaidas += valor;
+
+      atualizarResumo();
+      document.getElementById('descricao').value = '';
+      document.getElementById('valor').value = '';
+    }
+
+    function salvarLancamento(lancamento) {
+      const historico = JSON.parse(localStorage.getItem('historico')) || [];
+      historico.unshift(lancamento);
+      localStorage.setItem('historico', JSON.stringify(historico));
+      exibirLancamento(lancamento);
+      localStorage.setItem('totalEntradas', totalEntradas);
+      localStorage.setItem('totalSaidas', totalSaidas);
+    }
+
+    function exibirLancamento(l) {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.style.borderLeftColor = l.tipo === 'entrada' ? '#00c896' : '#ff6b6b';
+      div.innerHTML = `<strong>${l.tipo.toUpperCase()}</strong> - ${l.descricao}: R$ ${l.valor.toFixed(2)}<br><small>${l.dataHora}</small>`;
+      document.getElementById('historico').prepend(div);
+    }
+
+    function carregarHistorico() {
+      const historico = JSON.parse(localStorage.getItem('historico')) || [];
+      historico.forEach(exibirLancamento);
+    }
+
+    function atualizarResumo() {
+      let saldo = caixaInicial + totalEntradas - totalSaidas;
+      const saldoSalvo = parseFloat(localStorage.getItem('saldoManual'));
+      if (!isNaN(saldoSalvo)) saldo = saldoSalvo;
+
+      document.getElementById('totalEntradas').textContent = totalEntradas.toFixed(2);
+      document.getElementById('totalSaidas').textContent = totalSaidas.toFixed(2);
+      const saldoSpan = document.getElementById('totalLucro');
+      saldoSpan.textContent = saldo.toFixed(2);
+      saldoSpan.style.color = saldo < 0 ? '#ff4b4b' : '#00c896';
+    }
+
+    function abrirDialog(span, tipo) {
+      spanEditando = span;
+      tipoEditando = tipo;
+      document.getElementById('novoValor').value = parseFloat(span.textContent);
+      document.getElementById('editDialog').showModal();
+    }
+
+    document.getElementById('editDialog').addEventListener('close', () => {
+      const valor = parseFloat(document.getElementById('novoValor').value);
+      if (!isNaN(valor)) {
+        if (tipoEditando === 'entradas') {
+          totalEntradas = valor;
+          localStorage.setItem('totalEntradas', valor);
+        } else if (tipoEditando === 'saidas') {
+          totalSaidas = valor;
+          localStorage.setItem('totalSaidas', valor);
+        } else if (tipoEditando === 'caixaInicial') {
+          caixaInicial = valor;
+          localStorage.setItem('caixaInicial', valor);
+        } else if (tipoEditando === 'saldo') {
+          localStorage.setItem('saldoManual', valor);
+        }
+        atualizarResumo();
+      }
+    });
+  </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function baixarPDF() {
+    const historico = document.getElementById('historico');
+    if (!historico || historico.innerHTML.trim() === '') {
+      alert('Nenhum histórico disponível para exportar.');
+      return;
+    }
+
+    const opt = {
+      margin:       0.5,
+      filename:     `historico-financeiro-${new Date().toISOString().split('T')[0]}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(historico).save();
+  }
+
+function criarUsuario() {
+  const nome = document.getElementById('novoUsuario').value.trim();
+  const senha = document.getElementById('novaSenha').value.trim();
+  if (!nome || !senha) return alert('Preencha os campos de usuário e senha.');
+
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  if (usuarios.some(u => u.nome === nome)) return alert('Usuário já existe.');
+
+  usuarios.push({ nome, senha });
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  document.getElementById('novoUsuario').value = '';
+  document.getElementById('novaSenha').value = '';
+  listarUsuarios();
+}
+
+function listarUsuarios() {
+  const lista = document.getElementById('listaUsuarios');
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  lista.innerHTML = '';
+  usuarios.forEach((user, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${user.nome}</strong> 
+      <button onclick="editarUsuario(${index})">Editar</button>
+      <button onclick="excluirUsuario(${index})">Excluir</button>
+    `;
+    lista.appendChild(li);
+  });
+}
+
+function editarUsuario(index) {
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  const novoNome = prompt('Novo nome de usuário:', usuarios[index].nome);
+  const novaSenha = prompt('Nova senha:', usuarios[index].senha);
+  if (!novoNome || !novaSenha) return;
+
+  usuarios[index] = { nome: novoNome.trim(), senha: novaSenha.trim() };
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  listarUsuarios();
+}
+
+function excluirUsuario(index) {
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  if (!confirm(`Tem certeza que deseja excluir ${usuarios[index].nome}?`)) return;
+  usuarios.splice(index, 1);
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  listarUsuarios();
+}
+
+
+function mostrarUsuarios() {
+  const secao = document.getElementById('adminSection');
+  secao.classList.toggle('hidden');
+  listarUsuarios();
+}
+
+
+function logout() {
+  document.getElementById('appContainer').classList.add('hidden');
+  document.getElementById('adminSection').classList.add('hidden');
+  document.getElementById('btnUsuarios').classList.add('hidden');
+  document.getElementById('btnLogout').classList.add('hidden');
+  document.getElementById('loginContainer').classList.remove('hidden');
+}
+
+
+function limparHistorico() {
+  if (!confirm("Tem certeza que deseja limpar todo o histórico?")) return;
+
+  localStorage.removeItem('historico');
+  localStorage.removeItem('totalEntradas');
+  localStorage.removeItem('totalSaidas');
+  localStorage.removeItem('saldoManual');
+
+  totalEntradas = 0;
+  totalSaidas = 0;
+  atualizarResumo();
+
+  document.getElementById('historico').innerHTML = '';
+  alert("Histórico limpo com sucesso.");
+}
+
+</script>
+</body>
+
+</html>
