@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Finanças Completo</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js">
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js">
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #121212; color: #fff; margin: 0; padding: 0; }
+    .container { max-width: 800px; margin: 40px auto; background: #1e1e1e; padding: 30px; border-radius: 10px; }
+    input, button, select { width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; border: none; }
+    input, select { background: #2c2c2c; color: white; }
+    button { background: #00c896; color: black; font-weight: bold; cursor: pointer; }
+    .entry { background: #222; margin-top: 10px; padding: 10px; border-left: 5px solid #00c896; }
+    .editavel { cursor: pointer; color: #00c896; text-decoration: underline; }
+    dialog { background: #1e1e1e; border: none; border-radius: 10px; padding: 20px; color: white; }
+    dialog input { width: 100%; padding: 10px; background: #2c2c2c; color: white; border: 1px solid #555; border-radius: 5px; }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+    .admin-panel { background: #2a2a2a; padding: 10px; margin-top: 20px; border-radius: 6px; }
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+</head>
+<body>
+
+<div class="container" id="loginContainer">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <button onclick="register()">Registrar-se</button>
+</div>
+
+<div class="container" id="appContainer" style="display:none;">
+  <h2>Painel Financeiro</h2>
+  <button onclick="logout()">Sair</button>
+
+  <div class="admin-panel" id="adminPanel" style="display:none;">
+    <h3>👑 Criar Novo Usuário</h3>
+    <input type="email" id="newUserEmail" placeholder="Email do novo usuário">
+    <input type="password" id="newUserPassword" placeholder="Senha do novo usuário">
+    <button onclick="criarNovoUsuario()">Criar</button>
+  </div>
+
+  <h3>Resumo</h3>
+  <p>Caixa Inicial: <span class="editavel" onclick="abrirDialog('caixaInicial')">R$ <span id="caixaInicial">0.00</span></span></p>
+  <p>Total de Entradas: <span class="editavel" onclick="abrirDialog('entradas')">R$ <span id="totalEntradas">0.00</span></span></p>
+  <p>Total de Saídas: <span class="editavel" onclick="abrirDialog('saidas')">R$ <span id="totalSaidas">0.00</span></span></p>
+  <p>Saldo Atual: <strong>R$ <span id="saldoAtual">0.00</span></strong></p>
+
+  <h3>Lançamentos</h3>
+  <input type="text" id="descricao" placeholder="Descrição">
+  <input type="number" id="valor" placeholder="Valor">
+  <select id="tipo">
+    <option value="entrada">Entrada</option>
+    <option value="saida">Saída</option>
+  </select>
+  <button onclick="adicionarLancamento()">Adicionar</button>
+
+  <h3>Histórico</h3>
+  <div id="historico"></div>
+  <button onclick="baixarPDF()">📄 Baixar PDF</button>
+  <button onclick="limparHistorico()">🧹 Limpar Histórico</button>
+</div>
+
+<dialog id="editDialog">
+  <form method="dialog">
+    <h3>Editar Valor</h3>
+    <input type="number" step="0.01" id="novoValor">
+    <div style="margin-top: 15px;">
+      <button type="submit">Confirmar</button>
+      <button type="button" onclick="editDialog.close()">Cancelar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="caixaDialog">
+  <form method="dialog">
+    <h3>Informe o Caixa Inicial</h3>
+    <input type="number" step="0.01" id="valorCaixaDialog">
+    <div style="margin-top: 15px;">
+      <button type="submit">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0yNVRKhfhFWWfTfCB4HxjV7WzWS2XANQ",
+    authDomain: "dontrole-finaceiro.firebaseapp.com",
+    projectId: "dontrole-finaceiro",
+    storageBucket: "dontrole-finaceiro.firebasestorage.app",
+    messagingSenderId: "875412384700",
+    appId: "1:875412384700:web:1456230e14fb0057dfd9b9",
+    measurementId: "G-QTDXC5T6EC"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let totais = { entradas: 0, saidas: 0, caixaInicial: 0 };
+  let campoEditando = '';
+
+  function login() {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, senha)
+      .then(userCred => {
+        currentUser = userCred.user;
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        if (email === "admin@admin.com") document.getElementById('adminPanel').style.display = 'block';
+        carregarTotais(() => document.getElementById('caixaDialog').showModal());
+        carregarLancamentos();
+      })
+      .catch(err => alert("Erro no login: " + err.message));
+  }
+
+  document.getElementById('caixaDialog').addEventListener('close', () => {
+    const valor = parseFloat(document.getElementById('valorCaixaDialog').value);
+    if (!isNaN(valor)) {
+      totais.caixaInicial = valor;
+      atualizarTotais();
+    }
+  });
+
+  function register() {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('password').value;
+    auth.createUserWithEmailAndPassword(email, senha)
+      .then(() => alert("Registrado com sucesso"))
+      .catch(err => alert("Erro ao registrar: " + err.message));
+  }
+
+  function logout() {
+    auth.signOut().then(() => location.reload());
+  }
+
+  function criarNovoUsuario() {
+    const email = document.getElementById('newUserEmail').value;
+    const senha = document.getElementById('newUserPassword').value;
+    auth.createUserWithEmailAndPassword(email, senha)
+      .then(() => {
+        alert("Usuário criado. Você será desconectado.");
+        logout();
+      })
+      .catch(err => alert("Erro: " + err.message));
+  }
+
+  function adicionarLancamento() {
+    const descricao = document.getElementById('descricao').value;
+    const valor = parseFloat(document.getElementById('valor').value);
+    const tipo = document.getElementById('tipo').value;
+    if (!descricao || isNaN(valor)) return alert("Preencha todos os campos.");
+    db.collection("lancamentos").add({ uid: currentUser.uid, descricao, valor, tipo, dataHora: new Date().toISOString() })
+      .then(() => {
+        totais[tipo === 'entrada' ? 'entradas' : 'saidas'] += valor;
+        atualizarTotais();
+        document.getElementById('descricao').value = '';
+        document.getElementById('valor').value = '';
+        carregarLancamentos();
+      });
+  }
+
+  function carregarLancamentos() {
+    const container = document.getElementById('historico');
+    container.innerHTML = '';
+    db.collection("lancamentos").where("uid", "==", currentUser.uid).orderBy("dataHora", "desc")
+      .get().then(snapshot => {
+        snapshot.forEach(doc => {
+          const l = doc.data();
+          const div = document.createElement('div');
+          div.className = 'entry';
+          div.innerHTML = `<strong>${l.tipo.toUpperCase()}</strong> - ${l.descricao}: R$ ${l.valor.toFixed(2)}<br><small>${new Date(l.dataHora).toLocaleString('pt-BR')}</small>`;
+          container.appendChild(div);
+        });
+      });
+  }
+
+  function carregarTotais(callback) {
+    db.collection("totais").doc(currentUser.uid).get().then(doc => {
+      if (doc.exists) totais = doc.data();
+      atualizarTotais();
+      if (callback) callback();
+    });
+  }
+
+  function atualizarTotais() {
+    document.getElementById('totalEntradas').textContent = totais.entradas.toFixed(2);
+    document.getElementById('totalSaidas').textContent = totais.saidas.toFixed(2);
+    document.getElementById('caixaInicial').textContent = totais.caixaInicial.toFixed(2);
+    document.getElementById('saldoAtual').textContent = (totais.caixaInicial + totais.entradas - totais.saidas).toFixed(2);
+    db.collection("totais").doc(currentUser.uid).set(totais);
+  }
+
+  function abrirDialog(campo) {
+    campoEditando = campo;
+    document.getElementById('novoValor').value = totais[campo].toFixed(2);
+    document.getElementById('editDialog').showModal();
+  }
+
+  document.getElementById('editDialog').addEventListener('close', () => {
+    const novo = parseFloat(document.getElementById('novoValor').value);
+    if (!isNaN(novo)) {
+      totais[campoEditando] = novo;
+      atualizarTotais();
+    }
+  });
+
+  function baixarPDF() {
+    const opt = {
+      margin: 0.5,
+      filename: 'historico-financeiro.pdf',
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(document.getElementById('historico')).save();
+  }
+
+  function limparHistorico() {
+    if (!confirm("Deseja limpar todo o seu histórico?")) return;
+    db.collection("lancamentos")
+      .where("uid", "==", currentUser.uid).get().then(snapshot => {
+        const batch = db.batch();
+        snapshot.forEach(doc => batch.delete(doc.ref));
+        return batch.commit();
+      }).then(() => {
+        totais.entradas = 0;
+        totais.saidas = 0;
+        atualizarTotais();
+        carregarLancamentos();
+        alert("Histórico limpo!");
+      });
+  }
+
+function baixarExcel() {
+  const historico = document.getElementById("historico");
+  const entradas = historico.querySelectorAll(".entry");
+
+  if (!entradas.length) {
+    alert("Nenhum histórico disponível para exportar.");
+    return;
+  }
+
+  const dados = [["Tipo", "Valor", "Data", "Hora"]];
+  entradas.forEach(div => {
+    const html = div.innerHTML;
+    const tipo = html.includes("ENTRADA") ? "ENTRADA" : "SAÍDA";
+    const valorMatch = html.match(/R\$\s?(\d+[\.,]?\d*)/);
+    const dataMatch = html.match(/(\d{2}\/\d{2}\/\d{4})/);
+    const horaMatch = html.match(/(\d{2}:\d{2}:\d{2})/);
+    const valor = valorMatch ? valorMatch[1].replace(',', '.') : "";
+    const data = dataMatch ? dataMatch[1] : "";
+    const hora = horaMatch ? horaMatch[1] : "";
+    dados.push([tipo, parseFloat(valor), data, hora]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(dados);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Histórico");
+  XLSX.writeFile(wb, "historico-financeiro.xlsx");
+}
+</script>
+</body>
+</html>
